@@ -17,26 +17,56 @@ app.get('/', function(req, res){
 
 io.on('connection', function(socket){
 
-    io.emit('data', [1,2,3,4,5]);
+    let z = halfSquare(4421);
+    z = z.map((zi) => {return zi/9999});
+
+    io.emit('data', testUniform(z, 10));
 });
 
 http.listen(3000, function(){
     console.log('listening on :3000');
 });
 
-let n = 4421, z = [], a = [], k = 7, m = 13, a0 = 1;
+let a = [], k = 7, m = 13, a0 = 1;
 
-for(let i = 0; i < 100; i++) {
+function halfSquare (n){
 
-    n *= n;
-    n = '' + n;
+    let z = [];
 
-    while(n.length != 8) {
-        n = '0' + n;
+    for(let i = 0; i < 100; i++) {
+
+        n *= n;
+        n = '' + n;
+
+        while(n.length != 8) {
+            n = '0' + n;
+        }
+        n = parseInt(n.slice(2,6));
+
+        z[i] = n;
     }
-    n = parseInt(n.slice(2,6));
 
-    z[i] = n;
+    return z;
+}
+
+function testUniform(z, k) {
+    let n = Array.from({ length: k }, () => 0);
+
+    z = z.sort((a, b) => {
+            if(a > b) return 1;
+            if(a < b) return -1;
+        });
+
+    let i = 1, h =[];
+
+    for(let zi of z){
+        if(zi > i*(1/k)) {
+            i++;
+        }
+
+        n[i-1]++;
+    }
+    return n;
 }
 
 a[0] = a0;
