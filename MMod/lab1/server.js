@@ -17,23 +17,39 @@ app.get('/', function(req, res){
 
 io.on('connection', function(socket){
 
-    let z = halfSquare(4421);
-    z = z.map((zi) => {return zi/9999});
+    let m = 12345,
+        c = 7777, //c*A mod m
+        n = 9421,
+        k1 = 100,
+        k2 = 10000;
 
-    io.emit('data', testUniform(z, 10));
+
+    let z = halfSquareMethod(n, k1);
+    z = z.map((zi) => {return zi/9999});
+    io.emit('halfSquareMethod', testUniform(z, 10));
+
+    z = halfSquareMethod(n, k2);
+    z = z.map((zi) => {return zi/9999});
+    io.emit('halfSquareMethod10k', testUniform(z, 10));
+
+    z = mulMethod(c, m, 1, k1);
+    z = z.map((zi) => {return zi/m});
+    io.emit('mulMethod', testUniform(z, 10));
+
+    z = mulMethod(c, m, 1, k2);
+    z = z.map((zi) => {return zi/m});
+    io.emit('mulMethod10k', testUniform(z, 10));
 });
 
 http.listen(3000, function(){
     console.log('listening on :3000');
 });
 
-let a = [], k = 7, m = 13, a0 = 1;
-
-function halfSquare (n){
+function halfSquareMethod(n, k){
 
     let z = [];
 
-    for(let i = 0; i < 100; i++) {
+    for(let i = 0; i < k; i++) {
 
         n *= n;
         n = '' + n;
@@ -49,10 +65,25 @@ function halfSquare (n){
     return z;
 }
 
+function mulMethod(c, m, a0, k) {
+
+    let a = [];
+
+    a[0] = a0;
+    ai = a0;
+    for(let i = 1; i < k; i++) {
+
+        a[i] = c*ai % m;
+        ai = a[i];
+    }
+
+    return a;
+}
+
 function testUniform(z, k) {
     let n = Array.from({ length: k }, () => 0);
 
-    z = z.sort((a, b) => {
+    z = z.sort(function(a, b) {
             if(a > b) return 1;
             if(a < b) return -1;
         });
@@ -66,13 +97,11 @@ function testUniform(z, k) {
 
         n[i-1]++;
     }
+
+    n = n.map((ni) => {
+        return ni/ z.length;
+    });
+
+    console.log(n);
     return n;
-}
-
-a[0] = a0;
-ai = a0;
-for(let i = 1; i < 100; i++) {
-
-    a[i] = k*ai % m;
-    ai = a[i];
 }

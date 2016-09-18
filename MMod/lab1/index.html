@@ -8,36 +8,56 @@
     <style>
 
         .chart div {
-            font: 10px sans-serif;
+            font: 15px sans-serif;
             background-color: steelblue;
             text-align: right;
             padding: 3px;
-            margin: 1px;
-            color: white;
+            margin: 2px;
+            color: #006400;
+        }
+
+        .chart {
+            margin-bottom: 50px;
         }
 
     </style>
-    <div class="chart"></div>
+    <div class="chart chart1"></div>
+    <div class="chart chart2"></div>
+    <div class="chart chart3"></div>
+    <div class="chart chart4"></div>
     <script src="//d3js.org/d3.v3.min.js"></script>
     <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
     <script>
         var socket = io();
 
-        socket.on('data', function (data) {
-            console.log(data);
+        socket.on('halfSquareMethod', function (data) {
+            drowChart(data, ".chart1")
+        });
+        socket.on('halfSquareMethod10k', function (data) {
+            drowChart(data, ".chart2")
+        });
+        socket.on('mulMethod', function (data) {
+            drowChart(data, ".chart3")
+        });
+
+        socket.on('mulMethod10k', function (data) {
+            drowChart(data, ".chart4")
+        });
+
+        function drowChart(data, box) {
 
             var x = d3.scale.linear()
                     .domain([0, d3.max(data)])
                     .range([0, 420]);
 
-            d3.select(".chart")
+            d3.select(box)
                     .selectAll("div")
                     .data(data)
                     .enter().append("div")
-                    .style("width", function(d) { return x(d) + "px"; })
+                    .style("width", function(d) { return 2000*d + "px"; })
                     .text(function(d) { return d; });
 
-        });
+        }
     </script>
 </body>
 </html>
