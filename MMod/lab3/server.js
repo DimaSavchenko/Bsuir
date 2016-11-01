@@ -1,4 +1,3 @@
-
 var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
@@ -21,15 +20,16 @@ http.listen(9000, function(){
 let randomEvent = function(x) {
 
     let y = x.map((xi) => {
-            return Math.log(xi);
+            return -1/0.15 - Math.log(xi);
         }),
         ans = new Array(12).fill(0);
 
-    //console.log(y);
+    console.log(y);
 
     for(let yi of y) {
-        ans[Math.abs(Math.floor(yi) + 1)]++
+        ans[Math.abs(Math.floor(yi))]++
     }
+
 
     ans = ans.map( (ansi) => {
         return ansi/x.length;
